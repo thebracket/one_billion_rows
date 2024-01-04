@@ -149,6 +149,7 @@ fn main() -> anyhow::Result<()> {
     });
     println!("}}");
 
-    println!("Completed in {} seconds", start.elapsed().as_secs_f32());
+    let elapsed = start.elapsed();
+    println!("Completed in {} seconds", elapsed.as_secs_f32());
     Ok(())
 }
