@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use ahash::AHashMap;
 use std::fs::File;
 use std::time::Instant;
 use memmap2::MmapOptions;
@@ -42,7 +42,7 @@ fn find_next_newline(start: usize, buffer: &[u8]) -> usize {
 }
 
 fn scan_ascii_chunk(start: usize, end: usize, buffer: &[u8]) -> Vec<Aggregator> {
-    let mut counter = HashMap::with_capacity(NUM_STATIONS);
+    let mut counter = AHashMap::with_capacity(NUM_STATIONS);
 
     let mut pos = start;
     let mut line_start = start;

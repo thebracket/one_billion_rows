@@ -6,7 +6,7 @@ This is my attempt at wrangling [The One Billion Rows Challenge](https://github.
 
 * `create_measurements` is a direct port of the Java program that builds the 14gb measurements file. It's slow (you could easily speed it up by using a better random number generator). I didn't bother optimizing this, it just creates the input data and won't be used often. On my workstation, it takes about 109 seconds to run.
 * `naieve_create_average` is a direct port of the original `CalculateAverage` project from the Java repo. This is meant to serve as a baseline. It takes about 97 seconds on my workstation, which is quite awful.
-* `having_fun` is my attempt to go quite fast. See below. It averages 4.2 seconds on my workstation.
+* `having_fun` is my attempt to go quite fast. See below. It averages 3.2 seconds on my workstation.
 
 ## Having Fun
 
@@ -31,6 +31,11 @@ if the aggregator doesn't contain one---so we skip that overhead except for the 
 a station.
 
 Finally, we aggregate the results, sort and print them out.
+
+### Updates
+
+* Updated to use `ahash` instead of the built-in `HashMap` and now it is hitting 3.2 seconds!
+
 
 
 
