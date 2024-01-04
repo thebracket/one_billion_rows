@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/having_fun/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/naive_create_average/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/having_fun/benches" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
