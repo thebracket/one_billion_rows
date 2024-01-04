@@ -1,0 +1,18 @@
+[package]
+name = "one_billion_rows"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[workspace]
+members = [
+    "create_measurements", "having_fun", "naive_create_average",
+]
+
+[profile.release]
+strip = "debuginfo"
+lto = "fat"
+panic = "abort"
+incremental = false
+codegen-units = 1

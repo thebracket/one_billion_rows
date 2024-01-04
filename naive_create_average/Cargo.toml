@@ -1,0 +1,7 @@
+[package]
+name = "naive_create_average"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.79"
