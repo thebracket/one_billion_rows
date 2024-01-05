@@ -143,10 +143,13 @@ pub fn read_file() -> anyhow::Result<()> {
     //assert_eq!(result.len(), NUM_STATIONS);
 
     print!("{{");
-    result.iter().for_each(|v| {
+    result.iter().take(result.len()-1).for_each(|v| {
         let mean = v.sum / v.count as f64;
         print!("{}={:.1}/{:.1}/{mean:.1}, ", v.name, v.min, v.max);
     });
+    let v = &result[result.len()-1];
+    let mean = v.sum / v.count as f64;
+    print!("{}={:.1}/{:.1}/{mean:.1}", v.name, v.min, v.max);
     println!("}}");
 
     let elapsed = start.elapsed();
