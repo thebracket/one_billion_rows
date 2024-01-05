@@ -82,7 +82,7 @@ fn scan_ascii_chunk(start: usize, end: usize, buffer: &[u8]) -> Vec<Aggregator> 
 }
 
 pub fn read_file() -> anyhow::Result<()> {
-    let start = Instant::now();
+    //let start = Instant::now();
     let file = File::open(FILE)?;
     let mapped_file = unsafe { MmapOptions::new().map(&file)? };
     let size = mapped_file.len();
@@ -152,7 +152,7 @@ pub fn read_file() -> anyhow::Result<()> {
     print!("{}={:.1}/{:.1}/{mean:.1}", v.name, v.min, v.max);
     println!("}}");
 
-    let elapsed = start.elapsed();
-    println!("Completed in {} seconds", elapsed.as_secs_f32());
+    //let elapsed = start.elapsed();
+    //println!("Completed in {} seconds", elapsed.as_secs_f32());
     Ok(())
 }
