@@ -6,15 +6,17 @@ use memmap2::MmapOptions;
 pub const FILE: &str = "/home/herbert/Rust/one_billion_rows/create_measurements/measurements.txt";
 pub const NEWLINE: u8 = 10;
 pub const SEMICOLON: u8 = 59;
+pub const MINUS: u8 = 45;
+pub const PERIOD: u8 = 46;
 pub const NUM_CPUS: usize = 32; // I only have 18!
 pub const NUM_STATIONS: usize = 413;
 
 #[derive(Debug)]
 struct Aggregator {
     name: String,
-    min: f32,
-    max: f32,
-    sum: f64,
+    min: i32,
+    max: i32,
+    sum: i64,
     count: u64,
 }
 
@@ -22,9 +24,9 @@ impl Default for Aggregator {
     fn default() -> Self {
         Self {
             name: String::new(),
-            min: f32::MAX,
-            max: f32::MIN,
-            sum: 0.0,
+            min: i32::MAX,
+            max: i32::MIN,
+            sum: 0,
             count: 0,
         }
     }
@@ -39,6 +41,33 @@ fn find_next_newline(start: usize, buffer: &[u8]) -> usize {
         pos += 1;
     }
     panic!("Oops - no line found, your algorithm is broken.")
+}
+
+fn parse_ascii_digits(buffer: &[u8]) -> i32 {
+    let size = buffer.len();
+    let mut negative_mul = 1;
+    let mut accumulator = 0;
+    let mut positional_mul = 10_i32.pow(size as u32 - 2);
+    for i in 0 .. size {
+        match buffer[i] {
+            MINUS => {
+                negative_mul = -1;
+                positional_mul /= 10;
+            }
+            PERIOD => {
+                // Do nothing
+            }
+            48 ..= 57 => {
+                // Digits
+                let digit = buffer[i] as i32 - 48;
+                accumulator += digit * positional_mul;
+                positional_mul /= 10;
+            }
+            _ => panic!("Unhandled ASCII numerical symbol: {}", buffer[i]),
+        }
+    }
+    accumulator *= negative_mul;
+    accumulator
 }
 
 fn scan_ascii_chunk(start: usize, end: usize, buffer: &[u8]) -> Vec<Aggregator> {
@@ -59,15 +88,14 @@ fn scan_ascii_chunk(start: usize, end: usize, buffer: &[u8]) -> Vec<Aggregator> 
                 // This is the end of the line
                 let station = &buffer[line_start..name_end];
                 let value_ascii = &buffer[val_start..pos];
-                let value_string = String::from_utf8_lossy(value_ascii);
-                let value: f32 = value_string.parse().unwrap();
+                let value = parse_ascii_digits(value_ascii);
                 let entry = counter.entry(station).or_insert(Aggregator::default());
                 if entry.name.is_empty() {
                     entry.name = String::from_utf8_lossy(station).to_string();
                 }
-                entry.max = f32::max(value, entry.max);
-                entry.min = f32::min(value, entry.min);
-                entry.sum += value as f64;
+                entry.max = i32::max(value, entry.max);
+                entry.min = i32::min(value, entry.min);
+                entry.sum += value as i64;
                 entry.count += 1;
 
                 // Therefore the next line starts at the next character
@@ -129,8 +157,8 @@ pub fn read_file() -> anyhow::Result<()> {
                     if let Some(agg) = result.iter_mut().find(|a| a.name == v.name) {
                         agg.sum += v.sum;
                         agg.count += v.count;
-                        agg.max = f32::max(agg.max, v.max);
-                        agg.min = f32::min(agg.min, v.min);
+                        agg.max = i32::max(agg.max, v.max);
+                        agg.min = i32::min(agg.min, v.min);
                     } else {
                         result.push(v);
                     }
@@ -144,12 +172,12 @@ pub fn read_file() -> anyhow::Result<()> {
 
     print!("{{");
     result.iter().take(result.len()-1).for_each(|v| {
-        let mean = v.sum / v.count as f64;
-        print!("{}={:.1}/{:.1}/{mean:.1}, ", v.name, v.min, v.max);
+        let mean = v.sum as f64 / v.count as f64;
+        print!("{}={:.1}/{:.1}/{mean:.1}, ", v.name, v.min as f32 / 10.0, v.max as f32 / 10.0);
     });
     let v = &result[result.len()-1];
-    let mean = v.sum / v.count as f64;
-    print!("{}={:.1}/{:.1}/{mean:.1}", v.name, v.min, v.max);
+    let mean = v.sum as f64 / v.count as f64;
+    print!("{}={:.1}/{:.1}/{mean:.1}", v.name, v.min as f32 / 10.0, v.max as f32 / 10.0);
     println!("}}");
 
     //let elapsed = start.elapsed();
