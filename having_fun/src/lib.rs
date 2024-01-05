@@ -53,7 +53,7 @@ fn scan_ascii_chunk(start: usize, end: usize, buffer: &[u8]) -> Vec<Aggregator> 
             SEMICOLON => {
                 // From line_start to here-1 is the name
                 name_end = pos;
-                val_start = pos + 2;
+                val_start = pos + 1;
             }
             NEWLINE => {
                 // This is the end of the line

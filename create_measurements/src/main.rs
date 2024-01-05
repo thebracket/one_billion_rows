@@ -467,7 +467,7 @@ fn main() -> anyhow::Result<()> {
             println!("Wrote {i} measurements in {} ms", start.elapsed().as_millis());
         }
         let station = &stations[rand::thread_rng().gen_range(0 .. stations.len())];
-        let line = format!("{}; {}\n", station.id, station.measurement());
+        let line = format!("{};{}\n", station.id, station.measurement());
         stream.write(line.as_bytes())?;
     }
     println!("Created file with {size} measurements in {} ms", start.elapsed().as_millis());
