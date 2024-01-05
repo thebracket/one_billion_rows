@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::time::Instant;
+//use std::time::Instant;
 use ahash::AHashMap;
 use memmap2::MmapOptions;
 
